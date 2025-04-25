@@ -1,0 +1,1055 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DuelMembers.db</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #111;
+      color: #eee;
+      padding: 0;
+      margin: 0;
+    }
+    header {
+      background-color: #222;
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 2px solid #333;
+    }
+    header h1 {
+      font-size: 2.5em;
+      color: #ffcc00;
+      margin: 0;
+    }
+    header p {
+      margin: 5px 0;
+      color: #ccc;
+    }
+    nav {
+      background-color: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+    nav a {
+      color: #eee;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    nav a:hover {
+      color: #ffcc00;
+    }
+    section {
+      text-align: center;
+      padding: 20px 0;
+    }
+    section h2 {
+      color: #eee;
+      margin: 0;
+    }
+    section p {
+      color: #ccc;
+      margin: 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+    }
+    input[type="text"], button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #222;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    th {
+      background-color: #333;
+    }
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1 style="font-size: 2.75em; color: #ffcc00; margin: 0;">Duel Chess</h1>
+  <p><span style="font-size: 1.2em;">Put your skills to the test in a duel. Venmo / CashApp accepted</span></p>
+</header>
+
+<nav>
+  <a href="index.html" style="color: #eee; text-decoration: underline; font-size: 1.2em;">Home</a>
+  <a href="duel.html" style="color: #eee; text-decoration: underline; font-size: 1.2em;">Duel Games</a>
+  <a href="games.html" style="color: #eee; text-decoration: underline; font-size: 1.2em;">Other Games</a>
+</nav>
+
+<section>
+  <h2 style="font-size: 2em;">DuelMembers.db</h2>
+  <p><span style="font-size: 1.15em;">SQL Database of our current members. Filter and Search</span></p>
+</section>
+
+<div class="controls">
+  <label style="color:#ccc;"><input type="checkbox" id="duelFilter" onclick="filterTable()"> Has dueled</label>
+  <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search by username...">
+  <button id="sortBtn" onclick="toggleSort()">Sort by avg_elo</button>
+</div>
+
+<table id="chessTable">
+  <thead>
+    <tr>
+      <th>username</th>
+      <th>blitz_elo</th>
+      <th>bullet_elo</th>
+      <th>rapid_elo</th>
+      <th>games_played</th>
+      <th>best_rating</th>
+      <th>avg_win_percentage</th>
+      <th>most_common_opening</th>
+      <th>have_duel</th>
+      <th>avg_elo</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+  const data = [
+  {
+    "username": "Balance20i23",
+    "blitz_elo": 1696,
+    "bullet_elo": 1454,
+    "rapid_elo": 1451,
+    "games_played": 4006,
+    "best_rating": 1696,
+    "avg_win_percentage": 54,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1534
+  },
+  {
+    "username": "MaverickMeyer",
+    "blitz_elo": 1194,
+    "bullet_elo": 970,
+    "rapid_elo": 1324,
+    "games_played": 11711,
+    "best_rating": 1324,
+    "avg_win_percentage": 42,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1163
+  },
+  {
+    "username": "Simber55",
+    "blitz_elo": 1371,
+    "bullet_elo": 1546,
+    "rapid_elo": 1381,
+    "games_played": 11150,
+    "best_rating": 1546,
+    "avg_win_percentage": 41,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1433
+  },
+  {
+    "username": "darkpeas",
+    "blitz_elo": 1520,
+    "bullet_elo": 1081,
+    "rapid_elo": 1164,
+    "games_played": 11450,
+    "best_rating": 1520,
+    "avg_win_percentage": 45,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1255
+  },
+  {
+    "username": "tucen",
+    "blitz_elo": 1254,
+    "bullet_elo": 1234,
+    "rapid_elo": 1028,
+    "games_played": 7331,
+    "best_rating": 1254,
+    "avg_win_percentage": 40,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1172
+  },
+  {
+    "username": "xbaha",
+    "blitz_elo": 1631,
+    "bullet_elo": 1258,
+    "rapid_elo": 1689,
+    "games_played": 5926,
+    "best_rating": 1689,
+    "avg_win_percentage": 55,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1526
+  },
+  {
+    "username": "YouWillGet",
+    "blitz_elo": 953,
+    "bullet_elo": 1192,
+    "rapid_elo": 1601,
+    "games_played": 9628,
+    "best_rating": 1601,
+    "avg_win_percentage": 55,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1249
+  },
+  {
+    "username": "Fisher77",
+    "blitz_elo": 1188,
+    "bullet_elo": 1628,
+    "rapid_elo": 1687,
+    "games_played": 4648,
+    "best_rating": 1687,
+    "avg_win_percentage": 40,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1501
+  },
+  {
+    "username": "Nazzie88",
+    "blitz_elo": 1020,
+    "bullet_elo": 1549,
+    "rapid_elo": 1421,
+    "games_played": 5148,
+    "best_rating": 1549,
+    "avg_win_percentage": 43,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "No",
+    "avg_elo": 1330
+  },
+  {
+    "username": "NoQueenTrade",
+    "blitz_elo": 955,
+    "bullet_elo": 1018,
+    "rapid_elo": 1188,
+    "games_played": 5618,
+    "best_rating": 1188,
+    "avg_win_percentage": 50,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1054
+  },
+  {
+    "username": "Fisteraa",
+    "blitz_elo": 1215,
+    "bullet_elo": 1485,
+    "rapid_elo": 1420,
+    "games_played": 11602,
+    "best_rating": 1485,
+    "avg_win_percentage": 49,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1373
+  },
+  {
+    "username": "BobbyFish",
+    "blitz_elo": 1076,
+    "bullet_elo": 1611,
+    "rapid_elo": 1438,
+    "games_played": 9763,
+    "best_rating": 1611,
+    "avg_win_percentage": 49,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "No",
+    "avg_elo": 1375
+  },
+  {
+    "username": "Spaniarrd",
+    "blitz_elo": 1116,
+    "bullet_elo": 1573,
+    "rapid_elo": 1390,
+    "games_played": 9952,
+    "best_rating": 1573,
+    "avg_win_percentage": 51,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "No",
+    "avg_elo": 1360
+  },
+  {
+    "username": "type25",
+    "blitz_elo": 1366,
+    "bullet_elo": 1041,
+    "rapid_elo": 1312,
+    "games_played": 7163,
+    "best_rating": 1366,
+    "avg_win_percentage": 40,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "Yes",
+    "avg_elo": 1240
+  },
+  {
+    "username": "alexmason55",
+    "blitz_elo": 1005,
+    "bullet_elo": 1218,
+    "rapid_elo": 958,
+    "games_played": 10617,
+    "best_rating": 1218,
+    "avg_win_percentage": 47,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "No",
+    "avg_elo": 1060
+  },
+  {
+    "username": "firestorm333",
+    "blitz_elo": 1322,
+    "bullet_elo": 1130,
+    "rapid_elo": 1446,
+    "games_played": 4030,
+    "best_rating": 1446,
+    "avg_win_percentage": 45,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1299
+  },
+  {
+    "username": "KlauseKinsky",
+    "blitz_elo": 1324,
+    "bullet_elo": 1563,
+    "rapid_elo": 981,
+    "games_played": 7648,
+    "best_rating": 1563,
+    "avg_win_percentage": 48,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1289
+  },
+  {
+    "username": "EltonB45",
+    "blitz_elo": 1514,
+    "bullet_elo": 1252,
+    "rapid_elo": 1472,
+    "games_played": 9380,
+    "best_rating": 1514,
+    "avg_win_percentage": 47,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "No",
+    "avg_elo": 1413
+  },
+  {
+    "username": "UMDMainTeam",
+    "blitz_elo": 1437,
+    "bullet_elo": 1353,
+    "rapid_elo": 1677,
+    "games_played": 8619,
+    "best_rating": 1677,
+    "avg_win_percentage": 52,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1489
+  },
+  {
+    "username": "DarkKnight77",
+    "blitz_elo": 1015,
+    "bullet_elo": 1540,
+    "rapid_elo": 1467,
+    "games_played": 4095,
+    "best_rating": 1540,
+    "avg_win_percentage": 43,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1341
+  },
+  {
+    "username": "Omen685",
+    "blitz_elo": 1118,
+    "bullet_elo": 1341,
+    "rapid_elo": 1126,
+    "games_played": 8272,
+    "best_rating": 1341,
+    "avg_win_percentage": 40,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1195
+  },
+  {
+    "username": "Sando_3",
+    "blitz_elo": 992,
+    "bullet_elo": 1661,
+    "rapid_elo": 1190,
+    "games_played": 5532,
+    "best_rating": 1661,
+    "avg_win_percentage": 43,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1281
+  },
+  {
+    "username": "cdtcrng",
+    "blitz_elo": 1359,
+    "bullet_elo": 1262,
+    "rapid_elo": 1601,
+    "games_played": 5205,
+    "best_rating": 1601,
+    "avg_win_percentage": 52,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1407
+  },
+  {
+    "username": "S1had",
+    "blitz_elo": 1196,
+    "bullet_elo": 1484,
+    "rapid_elo": 1109,
+    "games_played": 7883,
+    "best_rating": 1484,
+    "avg_win_percentage": 57,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1263
+  },
+  {
+    "username": "ivactskeer",
+    "blitz_elo": 1515,
+    "bullet_elo": 1324,
+    "rapid_elo": 1386,
+    "games_played": 8663,
+    "best_rating": 1515,
+    "avg_win_percentage": 41,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1408
+  },
+  {
+    "username": "ashlykelly",
+    "blitz_elo": 1410,
+    "bullet_elo": 1492,
+    "rapid_elo": 1250,
+    "games_played": 6448,
+    "best_rating": 1492,
+    "avg_win_percentage": 44,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1384
+  },
+  {
+    "username": "4yeo99",
+    "blitz_elo": 1302,
+    "bullet_elo": 1596,
+    "rapid_elo": 1073,
+    "games_played": 6309,
+    "best_rating": 1596,
+    "avg_win_percentage": 45,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "No",
+    "avg_elo": 1324
+  },
+  {
+    "username": "QueensGambit7",
+    "blitz_elo": 1108,
+    "bullet_elo": 1447,
+    "rapid_elo": 1352,
+    "games_played": 5910,
+    "best_rating": 1447,
+    "avg_win_percentage": 46,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1302
+  },
+  {
+    "username": "LouisB5",
+    "blitz_elo": 1010,
+    "bullet_elo": 1282,
+    "rapid_elo": 1454,
+    "games_played": 8283,
+    "best_rating": 1454,
+    "avg_win_percentage": 56,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1249
+  },
+  {
+    "username": "D4enjoyer",
+    "blitz_elo": 1474,
+    "bullet_elo": 1197,
+    "rapid_elo": 1462,
+    "games_played": 5343,
+    "best_rating": 1474,
+    "avg_win_percentage": 60,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1378
+  },
+  {
+    "username": "knightsupremency",
+    "blitz_elo": 1556,
+    "bullet_elo": 1517,
+    "rapid_elo": 1472,
+    "games_played": 5623,
+    "best_rating": 1556,
+    "avg_win_percentage": 50,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "Yes",
+    "avg_elo": 1515
+  },
+  {
+    "username": "firecloser",
+    "blitz_elo": 1115,
+    "bullet_elo": 1252,
+    "rapid_elo": 1443,
+    "games_played": 11048,
+    "best_rating": 1443,
+    "avg_win_percentage": 46,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1270
+  },
+  {
+    "username": "TeamDQ",
+    "blitz_elo": 1339,
+    "bullet_elo": 1421,
+    "rapid_elo": 1410,
+    "games_played": 7864,
+    "best_rating": 1421,
+    "avg_win_percentage": 57,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "No",
+    "avg_elo": 1390
+  },
+  {
+    "username": "MagnusFischer",
+    "blitz_elo": 1047,
+    "bullet_elo": 1469,
+    "rapid_elo": 1666,
+    "games_played": 9463,
+    "best_rating": 1666,
+    "avg_win_percentage": 40,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1394
+  },
+  {
+    "username": "NeopleonBone",
+    "blitz_elo": 1258,
+    "bullet_elo": 1183,
+    "rapid_elo": 1070,
+    "games_played": 5427,
+    "best_rating": 1258,
+    "avg_win_percentage": 55,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1170
+  },
+  {
+    "username": "blitzkreig45",
+    "blitz_elo": 1652,
+    "bullet_elo": 1389,
+    "rapid_elo": 1588,
+    "games_played": 4607,
+    "best_rating": 1652,
+    "avg_win_percentage": 55,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "Yes",
+    "avg_elo": 1543
+  },
+  {
+    "username": "SloppyFischer",
+    "blitz_elo": 951,
+    "bullet_elo": 1596,
+    "rapid_elo": 1301,
+    "games_played": 4617,
+    "best_rating": 1596,
+    "avg_win_percentage": 59,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1283
+  },
+  {
+    "username": "CheckCheck",
+    "blitz_elo": 1202,
+    "bullet_elo": 1643,
+    "rapid_elo": 1511,
+    "games_played": 7737,
+    "best_rating": 1643,
+    "avg_win_percentage": 52,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1452
+  },
+  {
+    "username": "Pawnstars",
+    "blitz_elo": 1548,
+    "bullet_elo": 1575,
+    "rapid_elo": 1294,
+    "games_played": 9729,
+    "best_rating": 1575,
+    "avg_win_percentage": 46,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1472
+  },
+  {
+    "username": "TeamKnight",
+    "blitz_elo": 1431,
+    "bullet_elo": 960,
+    "rapid_elo": 1125,
+    "games_played": 4102,
+    "best_rating": 1431,
+    "avg_win_percentage": 40,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "Yes",
+    "avg_elo": 1172
+  },
+  {
+    "username": "WiseGuy",
+    "blitz_elo": 1068,
+    "bullet_elo": 1122,
+    "rapid_elo": 1302,
+    "games_played": 5176,
+    "best_rating": 1302,
+    "avg_win_percentage": 57,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "No",
+    "avg_elo": 1164
+  },
+  {
+    "username": "HughMattson",
+    "blitz_elo": 1052,
+    "bullet_elo": 1337,
+    "rapid_elo": 1662,
+    "games_played": 6701,
+    "best_rating": 1662,
+    "avg_win_percentage": 55,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "No",
+    "avg_elo": 1350
+  },
+  {
+    "username": "Bableo5",
+    "blitz_elo": 1137,
+    "bullet_elo": 1162,
+    "rapid_elo": 1669,
+    "games_played": 8058,
+    "best_rating": 1669,
+    "avg_win_percentage": 58,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "No",
+    "avg_elo": 1323
+  },
+  {
+    "username": "kiterr7",
+    "blitz_elo": 1426,
+    "bullet_elo": 1142,
+    "rapid_elo": 1141,
+    "games_played": 8730,
+    "best_rating": 1426,
+    "avg_win_percentage": 58,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "No",
+    "avg_elo": 1236
+  },
+  {
+    "username": "KnightFork44",
+    "blitz_elo": 1457,
+    "bullet_elo": 1516,
+    "rapid_elo": 1400,
+    "games_played": 11893,
+    "best_rating": 1516,
+    "avg_win_percentage": 56,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1458
+  },
+  {
+    "username": "elmiseventeen",
+    "blitz_elo": 1405,
+    "bullet_elo": 1586,
+    "rapid_elo": 1288,
+    "games_played": 8729,
+    "best_rating": 1586,
+    "avg_win_percentage": 54,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "No",
+    "avg_elo": 1426
+  },
+  {
+    "username": "clemson34",
+    "blitz_elo": 965,
+    "bullet_elo": 1234,
+    "rapid_elo": 1611,
+    "games_played": 10376,
+    "best_rating": 1611,
+    "avg_win_percentage": 58,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1270
+  },
+  {
+    "username": "Narik",
+    "blitz_elo": 1655,
+    "bullet_elo": 1130,
+    "rapid_elo": 1292,
+    "games_played": 6180,
+    "best_rating": 1655,
+    "avg_win_percentage": 45,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "No",
+    "avg_elo": 1359
+  },
+  {
+    "username": "CalvinMurrary",
+    "blitz_elo": 1600,
+    "bullet_elo": 1150,
+    "rapid_elo": 1151,
+    "games_played": 7265,
+    "best_rating": 1600,
+    "avg_win_percentage": 59,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "No",
+    "avg_elo": 1300
+  },
+  {
+    "username": "Agensen6",
+    "blitz_elo": 1402,
+    "bullet_elo": 1398,
+    "rapid_elo": 1415,
+    "games_played": 7152,
+    "best_rating": 1415,
+    "avg_win_percentage": 40,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1405
+  },
+  {
+    "username": "FatTony",
+    "blitz_elo": 961,
+    "bullet_elo": 1306,
+    "rapid_elo": 1199,
+    "games_played": 8289,
+    "best_rating": 1306,
+    "avg_win_percentage": 54,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1155
+  },
+  {
+    "username": "Soparsr",
+    "blitz_elo": 1569,
+    "bullet_elo": 1375,
+    "rapid_elo": 1148,
+    "games_played": 4901,
+    "best_rating": 1569,
+    "avg_win_percentage": 60,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1364
+  },
+  {
+    "username": "FlightFight",
+    "blitz_elo": 1123,
+    "bullet_elo": 1275,
+    "rapid_elo": 1578,
+    "games_played": 9219,
+    "best_rating": 1578,
+    "avg_win_percentage": 56,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1325
+  },
+  {
+    "username": "rexdam",
+    "blitz_elo": 1602,
+    "bullet_elo": 1156,
+    "rapid_elo": 1355,
+    "games_played": 6575,
+    "best_rating": 1602,
+    "avg_win_percentage": 58,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1371
+  },
+  {
+    "username": "opeliys",
+    "blitz_elo": 1362,
+    "bullet_elo": 1553,
+    "rapid_elo": 1000,
+    "games_played": 10964,
+    "best_rating": 1553,
+    "avg_win_percentage": 41,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "No",
+    "avg_elo": 1305
+  },
+  {
+    "username": "mysticvoyager",
+    "blitz_elo": 1391,
+    "bullet_elo": 1491,
+    "rapid_elo": 1700,
+    "games_played": 11973,
+    "best_rating": 1700,
+    "avg_win_percentage": 56,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1527
+  },
+  {
+    "username": "dona12",
+    "blitz_elo": 1278,
+    "bullet_elo": 1557,
+    "rapid_elo": 1553,
+    "games_played": 4483,
+    "best_rating": 1557,
+    "avg_win_percentage": 49,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "Yes",
+    "avg_elo": 1463
+  },
+  {
+    "username": "joerk44",
+    "blitz_elo": 1213,
+    "bullet_elo": 1357,
+    "rapid_elo": 1694,
+    "games_played": 6615,
+    "best_rating": 1694,
+    "avg_win_percentage": 47,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1421
+  },
+  {
+    "username": "anabe876",
+    "blitz_elo": 959,
+    "bullet_elo": 1479,
+    "rapid_elo": 1525,
+    "games_played": 10034,
+    "best_rating": 1525,
+    "avg_win_percentage": 56,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "No",
+    "avg_elo": 1321
+  },
+  {
+    "username": "garnaus",
+    "blitz_elo": 999,
+    "bullet_elo": 1518,
+    "rapid_elo": 1219,
+    "games_played": 10809,
+    "best_rating": 1518,
+    "avg_win_percentage": 52,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1245
+  },
+  {
+    "username": "sackrook4queen",
+    "blitz_elo": 1007,
+    "bullet_elo": 1229,
+    "rapid_elo": 1677,
+    "games_played": 6285,
+    "best_rating": 1677,
+    "avg_win_percentage": 57,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "No",
+    "avg_elo": 1304
+  },
+  {
+    "username": "pawntrader",
+    "blitz_elo": 1560,
+    "bullet_elo": 1250,
+    "rapid_elo": 1323,
+    "games_played": 10589,
+    "best_rating": 1560,
+    "avg_win_percentage": 41,
+    "most_common_opening": "French Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1378
+  },
+  {
+    "username": "garnaurs",
+    "blitz_elo": 1010,
+    "bullet_elo": 1235,
+    "rapid_elo": 1317,
+    "games_played": 9566,
+    "best_rating": 1317,
+    "avg_win_percentage": 44,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1187
+  },
+  {
+    "username": "xboxorps4",
+    "blitz_elo": 1031,
+    "bullet_elo": 1571,
+    "rapid_elo": 1421,
+    "games_played": 5796,
+    "best_rating": 1571,
+    "avg_win_percentage": 56,
+    "most_common_opening": "French Defense",
+    "have_duel": "No",
+    "avg_elo": 1341
+  },
+  {
+    "username": "Puggsy4918",
+    "blitz_elo": 951,
+    "bullet_elo": 1312,
+    "rapid_elo": 1644,
+    "games_played": 5532,
+    "best_rating": 1644,
+    "avg_win_percentage": 46,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "Yes",
+    "avg_elo": 1302
+  },
+  {
+    "username": "ELProfessor",
+    "blitz_elo": 1353,
+    "bullet_elo": 1690,
+    "rapid_elo": 1437,
+    "games_played": 4422,
+    "best_rating": 1690,
+    "avg_win_percentage": 52,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "No",
+    "avg_elo": 1493
+  },
+  {
+    "username": "ChatGPT45",
+    "blitz_elo": 1536,
+    "bullet_elo": 1004,
+    "rapid_elo": 1501,
+    "games_played": 5685,
+    "best_rating": 1536,
+    "avg_win_percentage": 49,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1347
+  },
+  {
+    "username": "BruceLeee",
+    "blitz_elo": 1281,
+    "bullet_elo": 1209,
+    "rapid_elo": 1324,
+    "games_played": 11570,
+    "best_rating": 1324,
+    "avg_win_percentage": 41,
+    "most_common_opening": "Ruy Lopez",
+    "have_duel": "Yes",
+    "avg_elo": 1271
+  },
+  {
+    "username": "funbags33",
+    "blitz_elo": 1470,
+    "bullet_elo": 1050,
+    "rapid_elo": 975,
+    "games_played": 11364,
+    "best_rating": 1470,
+    "avg_win_percentage": 40,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "Yes",
+    "avg_elo": 1165
+  },
+  {
+    "username": "glucosesyns",
+    "blitz_elo": 1028,
+    "bullet_elo": 1654,
+    "rapid_elo": 1297,
+    "games_played": 4763,
+    "best_rating": 1654,
+    "avg_win_percentage": 57,
+    "most_common_opening": "King's Pawn Opening",
+    "have_duel": "Yes",
+    "avg_elo": 1326
+  },
+  {
+    "username": "4colorehroem",
+    "blitz_elo": 1607,
+    "bullet_elo": 1596,
+    "rapid_elo": 1412,
+    "games_played": 11861,
+    "best_rating": 1607,
+    "avg_win_percentage": 50,
+    "most_common_opening": "Queen's Gambit",
+    "have_duel": "No",
+    "avg_elo": 1538
+  },
+  {
+    "username": "aman0317",
+    "blitz_elo": 1578,
+    "bullet_elo": 1597,
+    "rapid_elo": 1584,
+    "games_played": 6812,
+    "best_rating": 1597,
+    "avg_win_percentage": 46,
+    "most_common_opening": "Sicilian Defense",
+    "have_duel": "Yes",
+    "avg_elo": 1586
+  }
+]; // REPLACE with full JSON array
+  const originalData = [...data];
+  let sorted = false;
+
+  function renderTable(dataSet) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    dataSet.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.username}</td>
+        <td>${row.blitz_elo}</td>
+        <td>${row.bullet_elo}</td>
+        <td>${row.rapid_elo}</td>
+        <td>${row.games_played}</td>
+        <td>${row.best_rating}</td>
+        <td>${row.avg_win_percentage}</td>
+        <td>${row.most_common_opening}</td>
+        <td>${row.have_duel}</td>
+        <td>${row.avg_elo}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function filterTable() {
+    const input = document.getElementById("searchInput").value.toUpperCase();
+    const showDueled = document.getElementById("duelFilter").checked;
+
+    let filtered = (sorted ? [...data].sort((a, b) => b.avg_elo - a.avg_elo) : originalData);
+
+    if (input) {
+      filtered = filtered.filter(row =>
+        row.username.toUpperCase().includes(input)
+      );
+    }
+
+    if (showDueled) {
+      filtered = filtered.filter(row => row.have_duel === "Yes");
+    }
+
+    renderTable(filtered);
+  }
+
+  function toggleSort() {
+    const btn = document.getElementById('sortBtn');
+    sorted = !sorted;
+    if (sorted) {
+      renderTable([...data].sort((a, b) => b.avg_elo - a.avg_elo));
+      btn.textContent = "Undo sort";
+    } else {
+      renderTable(originalData);
+      btn.textContent = "Sort by avg_elo";
+    }
+    filterTable();
+  }
+
+  renderTable(originalData);
+</script>
+
+</body>
+</html>
